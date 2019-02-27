@@ -1,0 +1,59 @@
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+ function sideMenu() {
+            var pageInfo = "Generate Report";
+            //            alert(pageInfo);
+            $.ajax({
+                type: "POST",
+                url: "getsidemenuformanagedata",
+                data: "pageInfo=" + pageInfo,
+                contentType: 'application/x-www-form-urlencoded',
+                success: function(res) {
+                    var jsonlist = JSON.stringify(res);
+                    var functionsubmodules = "";
+                    var dynamicsublistid = "listdata";
+                    var finaldynamicdata = "";
+                    var finaldynamiclistdata = "";
+                    $.each(JSON.parse(jsonlist), function(idx, value) {
+                        $.each(JSON.parse(JSON.stringify(value)), function(key, obj) {
+//                                    alert(key)
+                            finaldynamiclistdata = dynamicsublistid + idx;
+                            if (key === 'functionSubmodule') {
+                                if (functionsubmodules !== obj) {
+                                    functionsubmodules = obj;
+                                    var listdata = "<li data-target='#datamaintainance' class='active'><a href='#' title='" + functionsubmodules + "'> " + obj + " <span class='arrow'></span></a> <ul class='sub-menu datamaintainance' id='maintaindata'></ul></li>";
+                                    $("#menu-content").append(listdata);
+
+                                } else {
+                                    functionsubmodules = obj;
+                                }
+                                if (functionsubmodules === "") {
+                                    functionsubmodules = obj;
+                                }
+                            }
+                            if (key === 'functionName') {
+//                                        alert(obj);
+                                var sublistdata = "<li title='" + obj + "'><a id='" + finaldynamiclistdata + "'>" + obj + "</a></li>";
+                                $("#maintaindata").append(sublistdata);
+//                                        
+                            }
+                            if (key === 'functionUrl') {
+                                $("#listdata" + idx).attr("href", obj);
+                            }
+
+                        });
+
+                    });
+//                              break;
+                }, error: function(e) {
+                    alert(e);
+                    $("#pageloaddiv").hide();
+                    $("#loading-content").hide();
+                }
+            });
+        }
+

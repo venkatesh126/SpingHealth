@@ -1,0 +1,203 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 25, 2016, 11:24:21 AM
+    Author     : venkatesh
+*/
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+.login-page {
+    width: 440px;
+    padding: 8% 0 0;
+    margin: auto;
+}
+.myform{
+    padding: 0px 35px 5px 35px;
+}
+.form {
+    border-radius: 5px; 
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 440px;
+    margin: 0px auto 83px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    top: 100px;
+}
+.form input {
+    font-family: "Roboto";
+    outline: 0;
+    background: #fff;
+    border-radius: 5px;
+    width: 100%;
+    border: 0;
+    margin: 5px 0 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    color: #023a66;
+    font-weight: bold;
+}
+.form button {
+    font-family: "Roboto";
+    /*text-transform: uppercase;*/
+    outline: 0;
+    border-radius: 6px;
+    color: #FFFFFF;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #015A7F;
+    color: #fff;
+    border: 0;
+    font-size: 20px;
+    line-height: 21px;
+    padding: 12px 35px 12px;
+    /*border-radius: 40px;*/
+    /*margin-top: 20px;*/
+}
+
+.form .message {
+    margin: 30px 0 0;
+    color: #b3b3b3;
+    font-size: 16px;
+}
+.form .message a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+.form .register-form {
+    display: none;
+}
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 300px;
+    margin: 0 auto;
+}
+.container:before, .container:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.container .info {
+    margin: 50px auto;
+    text-align: center;
+}
+.container .info h1 {
+    margin: 0 0 15px;
+    padding: 0;
+    font-size: 36px;
+    font-weight: 300;
+    color: #1a1a1a;
+}
+.container .info span {
+    color: #4d4d4d;
+    font-size: 12px;
+}
+.container .info span a {
+    color: #000000;
+    text-decoration: none;
+}
+.container .info span .fa {
+    color: #EF3B3A;
+}
+body {
+    z-index: 1005;
+    background-color: #0B5F83;
+    font-family: "Roboto";
+
+}
+.form .heading_mess {
+    margin: 0px 0px 30px;
+    /*color: #b3b3b3;*/
+    font-size: 24px;
+    color: #023a66;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+    background: #F9F7F9;
+    border-radius: 5px;
+}
+.form .heading_mess img{
+    width: 300px;
+    height: initial;
+    margin: 5%;
+}
+.form .heading_mess:hover{
+    color: #43A047;
+}
+select,input{
+    background: #f2f2f2;
+    border: 2px solid #ddd;
+    color: #696763;
+    /*display: block;*/
+    font-family: 'Roboto';
+    font-size: 14px;
+    font-weight: 300;
+
+    /*margin-bottom: 2px;*/
+    outline: medium none;
+    padding-left: 10px;
+    width: 100%;
+    border-radius: 5px; 
+}
+#username,#password {
+    padding-left: 30px;
+}
+#username-label,#password-label {
+    position: relative;
+}
+#username-label:before {
+    color: #666;
+    content:"\f007";
+    font-family: FontAwesome;
+    position: absolute;
+    top: 0px;
+    left: 5px;
+}
+
+#password-label:before {
+    color: #666;
+    content:"\f084";
+    font-family: FontAwesome;
+    position: absolute;
+    top: 0px;
+    left: 5px;
+}
+#main-textname{
+    color: #07597C;
+    font-size: 14px;
+    font-weight: bold;
+    text-align:left;  
+}
+.trouble-heading{
+    color: #07597C;
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: underline;
+        margin-top: 5px;
+}
+.footer {
+    display: table;
+    width: 100%;
+    color: white;
+    padding-top: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    /*margin-top: 8%;*/
+}
+.text-center{
+    text-align: center;
+}
+#gap-10{
+    height: 20px;
+    clear: both;
+    display: block;
+}

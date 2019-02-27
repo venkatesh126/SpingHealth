@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="com.DrugorderingSystem_war_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaCdmDispenseqty</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaCdmInventoryParameters</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaCdmInventoryBalance</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaCdmmaster</class>
+        <class>com.occularpharma.core.login.model.EmployeeMaster</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaPriceMaster</class>
+        <class>com.occularpharma.core.maintainparlevels.model.NdcDispenseDetails</class>
+        <class>com.occularpharma.core.maintainparlevels.model.NdcCosts</class>
+        <class>com.occularpharma.core.maintainparlevels.model.NdcManufacturerDetails</class>
+        <class>com.occularpharma.core.maintainparlevels.model.NdcDefine</class>
+        <class>com.occularpharma.core.maintainparlevels.model.NdcVendorMaster</class>
+        <class>com.occularpharma.core.maintainparlevels.model.AhfsClassificationLevel2</class>
+        <class>com.occularpharma.core.maintainparlevels.model.AhfsClassificationLevel3</class>
+        <class>com.occularpharma.core.maintainparlevels.model.AhfsClassificationLevel1</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaPurchaseOrderDetails</class>
+        <class>com.occularpharma.core.maintainparlevels.model.Exsitingcategory</class>
+        <class>com.occularpharma.core.maintainparlevels.model.Subcategoryview</class>
+        <class>com.occularpharma.core.maintainparlevels.model.Categoryview</class>
+        <class>com.occularpharma.core.maintainparlevels.model.Subsubcategoryview</class>
+        <class>com.occularpharma.core.Assigncdmtondc.model.Exsitingpiid</class>
+        <class>com.occularpharma.core.orderdrugs.model.PurchaseOrdersInprocess</class>
+        <class>com.occularpharma.core.Assigncdmtondc.model.ScopePurchasingGpi</class>
+        <class>com.occularpharma.core.orderdrugs.model.PharmaInvoiceHistory</class>
+        <class>com.occularpharma.core.orderdrugs.model.Contractpriority</class>
+        <class>com.occularpharma.core.orderdrugs.model.PharmaPriceLevelFormId</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaNdcDispenseFactors</class>
+        <class>com.occularpharma.core.maintainparlevels.model.PharmaUtilizationParameters</class>
+        <class>com.occularpharma.core.orderdrugs.model.PharmaPurchaseOrderDetails</class>
+        <class>com.occularpharma.core.home.model.Invoiceamountvariance</class>
+        <class>com.occularpharma.core.home.model.Ahfstoppreviousyearamount</class>
+        <class>com.occularpharma.core.home.model.Ahfstopcurrentyearamount</class>
+        <class>com.occularpharma.core.Profile.model.PharmaFunctionrole</class>
+        <class>com.occularpharma.core.datamaintanence.model.PharmaPriceLevelFormId</class>
+        <class>com.occularpharma.core.datamaintanence.model.PharmaBudget</class>
+        <class>com.occularpharma.core.login.model.FacilityMaster</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <!--Local Database Properties-->
+                  <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/occularpharmacy?zeroDateTimeBehavior=convertToNull"/>
+            <property name="javax.persistence.jdbc.user" value="root"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.password" value="venkat"/>
+            <!--<property name="javax.persistence.jdbc.password" value="stevenscreek"/>-->
+            <!-- server database properties-->
+<!--            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://occularhealthapp.c9khaodk8fgw.us-west-2.rds.amazonaws.com:3306/occular_dps_dev"/>
+            <property name="javax.persistence.jdbc.password" value="occularadmin"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="occularadmin"/> -->
+        </properties>
+    </persistence-unit>
+</persistence>

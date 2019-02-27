@@ -1,0 +1,306 @@
+ /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.occularpharma.core.generaterepot.daoimpl;
+
+import com.occularpharma.core.common.Constants;
+import com.occularpharma.core.orderdrugs.service.Orderdrugsservice;
+import com.occularpharma.core.generaterepot.dao.Generatereportdao;
+import com.occularpharma.core.generaterepot.service.GeneratereportService;
+import com.occularpharma.core.maintainparlevels.model.AhfsClassificationLevel3;
+import com.occularpharma.core.maintainparlevels.model.PharmaCdmDispenseqty;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ *
+ * @author venkat
+ */
+@Repository
+public class GenereatereportdaoImpl implements Generatereportdao {
+
+    final static Logger logger = Logger.getLogger(GenereatereportdaoImpl.class);
+
+    @Autowired
+    SessionFactory sessionfactory;
+    @Autowired
+    GeneratereportService ReportService;
+    @Autowired
+    Orderdrugsservice orderdrugsservice;
+
+    /**
+     *
+     * @param selectyear
+     * @param ahfscdesc
+     * @param genname
+     * @return volumedata *caling getvolumeVariance() function in
+     * pricevariance.jsp page /* Displaying volume variance data in
+     * Pricevariance.jsp page
+     */
+    @Override
+    public String getReportvariance(String selectyear, String[] ahfscdesc, String genname) {
+        @SuppressWarnings("unchecked")
+        String volumedata = "";
+        try {
+            String Currentyear = ReportService.calculateReportvolumevariance("Currentyear", ahfscdesc, genname);
+            String Previousyear = ReportService.calculateReportvolumevariance("Previousyear", ahfscdesc, genname);
+
+            String currentyeararray[] = Currentyear.split("\\^");
+            String previousyeararray[] = Previousyear.split("\\^");
+            String currentyearprice[] = currentyeararray[0].split("@");
+            String currentyearvolume[] = currentyeararray[1].split("@");
+            String currentyearaverage[] = currentyeararray[2].split("@");
+            String currentcdm[] = currentyeararray[3].split("@");
+            String curcharge_desc[] = currentyeararray[4].split("@");
+
+            String previousyearprice[] = previousyeararray[0].split("@");
+            String previousyearvolume[] = previousyeararray[1].split("@");
+            String previousyearaverage[] = previousyeararray[2].split("@");
+            String prevcharge_desc[] = previousyeararray[3].split("@");
+            String previouscdm[] = currentyeararray[3].split("@");
+
+            double volumevariancevalue = 0;
+            double sumvolumevariancevalue = 0;
+            double pricevariancevalue = 0;
+            double sumpricevariancevalue = 0;
+            double totalvariancevalue = 0;
+            double sumtotalvariancevalue = 0;
+            String individualsumvolumevariancevalue = "";
+            String individualsumpricevariancevalue = "";
+            String individualsumtotalvariancevalue = "";
+            String cdmsum = "";
+
+            String currentyear_price = "";
+            String previousyear_price = "";
+            String currentyear_volume = "";
+            String previousyear_volume = "";
+            String currentyear_avg = "";
+            String previousyear_avg = "";
+            String charge_description = "";
+
+            for (int i = 0; i < currentyearprice.length; i++) {
+
+                volumevariancevalue = (Double.parseDouble(currentyearvolume[i]) - Double.parseDouble(previousyearvolume[i])) * Double.parseDouble(previousyearaverage[i]);
+                pricevariancevalue = (Double.parseDouble(currentyearaverage[i]) - Double.parseDouble(previousyearaverage[i])) * Double.parseDouble(currentyearvolume[i]);
+                totalvariancevalue = (Double.parseDouble(currentyearprice[i]) - Double.parseDouble(previousyearprice[i]));
+                sumvolumevariancevalue += volumevariancevalue;
+                sumpricevariancevalue += pricevariancevalue;
+                sumtotalvariancevalue += totalvariancevalue;
+                individualsumvolumevariancevalue += volumevariancevalue + "@";
+                individualsumpricevariancevalue += pricevariancevalue + "@";
+                individualsumtotalvariancevalue += totalvariancevalue + "@";
+                currentyear_volume += currentyearvolume[i] + "@";
+                previousyear_volume += previousyearvolume[i] + "@";
+                currentyear_avg += currentyearaverage[i] + "@";
+                previousyear_avg += previousyearaverage[i] + "@";
+                currentyear_price += currentyearprice[i] + "@";
+                previousyear_price += previousyearprice[i] + "@";
+                charge_description += curcharge_desc[i] + "@";
+                cdmsum += previouscdm[i] + "@";
+
+            }
+            volumedata = currentyear_volume + "^" + previousyear_volume + "^" + currentyear_avg + "^" + previousyear_avg + "^" + currentyear_price + "^" + previousyear_price + "^" + sumvolumevariancevalue + " ^ " + sumpricevariancevalue + " ^ " + sumtotalvariancevalue + "^" + cdmsum + "^" + individualsumvolumevariancevalue + "^" + individualsumpricevariancevalue + "^" + individualsumtotalvariancevalue + "^" + charge_description;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(" Exception in  getReportvariance Method" + e);
+        }
+        return volumedata;
+    }
+
+    /**
+     * @param cdmNumber
+     * @return cdmlist
+     *
+     */
+    @Override
+    public String updatereportCinNumbers(String cdmNumber) {
+        String cdmlist = orderdrugsservice.displayNdcdata(cdmNumber);
+        return cdmlist;
+    }
+
+    /**
+     *
+     * @return success message
+     * @param cdm
+     * @param chargedesc
+     * @param cin
+     * @param ndc
+     * @param orderqty
+     *
+     */
+    @Override
+    public String insertInprocessdata(String cdm, String ndc, String cin, String chargedesc, String orderqty) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());// current timestamp 
+        @SuppressWarnings("unchecked")
+        Session session = sessionfactory.openSession();
+        session.beginTransaction();
+        String message = "";
+        try {
+            // int count = ((Long) session.createQuery("select count(DISTINCT patientAccountnumber) from PatientIcd10Pcscodes where patientAccountnumber IN(select patientAccountnumber from SurgeryHistory where year(caseStartDate)='"+yearvalue+"') and icd10PcsCode1 IN (select icddataid from Icddatainsert where procedureId='"+procedureid+"' and assignvalue='yes')").uniqueResult()).intValue();
+
+            int count = ((Long) session.createQuery("SELECT COUNT(distinct cdm) FROM PurchaseOrdersInprocess WHERE cdm='" + cdm + "' and ndc='" + ndc + "' and cin='" + cin + "' and date(currentDatevalue)=CURDATE()").uniqueResult()).intValue();
+            if (count > 0) {
+                message = Constants.CIN_NUMBER_VALIDATE_MESSAGE;
+            } else {
+                Query insertqry = session.createSQLQuery("insert into purchase_orders_inprocess(cdm,ndc,cin,current_datevalue,charge_description,order_quantity,po_submission_status,po_active_flag)values(?,?,?,?,?,?,?,?) ");
+                insertqry.setString(0, cdm);
+                insertqry.setString(1, ndc);
+                insertqry.setString(2, cin);
+                insertqry.setString(3, timestamp.toString());
+                insertqry.setString(4, chargedesc);
+                insertqry.setString(5, orderqty);
+                insertqry.setInteger(6, Constants.INACTIVE);
+                insertqry.setInteger(7, Constants.ACTIVE);
+                insertqry.executeUpdate();
+                session.getTransaction().commit();
+                session.flush();
+                session.clear();
+                message = Constants.INSERT_MESSAGE;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(" Exception in  insertInprocessdata Method" + e);
+        } finally {
+            session.close();
+        }
+        return message;
+    }
+
+    /**
+     *
+     * @return
+     */
+    /**
+     * **Displaying Inventory Level Status in Report page **
+     */
+    @Override
+    public String inventoryStatus(String genname, String drugclassification, String percentvalue, String maxpercent) {
+
+        @SuppressWarnings("unchecked")
+        Session session = sessionfactory.openSession();
+        String cdmdata = "";
+        try {
+
+            List<AhfsClassificationLevel3> ahfsClassificationLevel3List = null;
+
+            String inventory = "";
+            String safestock = "";
+            String labledescription = "";
+            String cdmdatavalue = "";
+            String category = "";
+            String maxlevel = "";
+            if (genname != "" && drugclassification == "") {
+                //ahfsClassificationLevel3List = session.createQuery("select distinct pharma_cdm_inv.cdm,pharma_cdm_inv.inventoryBalance,pharma_cdm_inv.minLevel,pharma_cdm_inv.categoryLevelid,pharma_cdm_inv.maxLevel, from PharmaCdmInventoryParameters as pharma_cdm_inv,NdcDefine as ndcval where pharma_cdm_inv.cdm!='" + Constants.NDC_CDM + "' and ndcval.cdm=pharma_cdm_inv.cdm and ndcval.genericName like '%"+genname+"%'").list();
+                ahfsClassificationLevel3List = session.createSQLQuery("select distinct pharma_invpar.cdm,pharma_invpar.inventory_balance,pharma_invpar.min_level,pharma_invpar.category_levelid,pharma_invpar.max_level,IFNULL(ROUND((pharma_invpar.inventory_balance-pharma_invpar.min_level)/pharma_invpar.min_level),0) as inm from pharma_cdm_inventory_parameters as pharma_invpar,ndc_define as ndcval where pharma_invpar.cdm!='" + Constants.NDC_CDM + "' and ndcval.cdm=pharma_invpar.cdm and ndcval.generic_name like '%" + genname + "%' HAVING inm BETWEEN '" + maxpercent + "' AND '" + percentvalue + "'").list();
+            } else if (genname == "" && drugclassification != "") {
+    //ahfsClassificationLevel3List = session.createQuery("select distinct cdm,inventoryBalance,minLevel,categoryLevelid,maxLevel from PharmaCdmInventoryParameters where cdm!='" + Constants.NDC_CDM + "' and categoryLevelid='"+drugclassification+"'").list();
+
+                ahfsClassificationLevel3List = session.createSQLQuery("select distinct pharma_invpar.cdm,pharma_invpar.inventory_balance,pharma_invpar.min_level,pharma_invpar.category_levelid,pharma_invpar.max_level,IFNULL(ROUND((pharma_invpar.inventory_balance-pharma_invpar.min_level)/pharma_invpar.min_level),0) as inm from pharma_cdm_inventory_parameters as pharma_invpar where pharma_invpar.cdm!='" + Constants.NDC_CDM + "' HAVING inm BETWEEN '" + maxpercent + "' AND '" + percentvalue + "'").list();
+            } else if (genname != "" && drugclassification != "") {
+                //ahfsClassificationLevel3List = session.createQuery("select distinct pharma_cdm_inv.cdm,pharma_cdm_inv.inventoryBalance,pharma_cdm_inv.minLevel,pharma_cdm_inv.categoryLevelid,pharma_cdm_inv.maxLevel from PharmaCdmInventoryParameters as pharma_cdm_inv,NdcDefine as ndcval where pharma_cdm_inv.cdm!='" + Constants.NDC_CDM + "' and pharma_cdm_inv.categoryLevelid='"+drugclassification+"' and ndcval.cdm=pharma_cdm_inv.cdm and ndcval.genericName like '%"+genname+"%'").list();
+                ahfsClassificationLevel3List = session.createSQLQuery("select distinct pharma_invpar.cdm,pharma_invpar.inventory_balance,pharma_invpar.min_level,pharma_invpar.category_levelid,pharma_invpar.max_level,IFNULL(ROUND((pharma_invpar.inventory_balance-pharma_invpar.min_level)/pharma_invpar.min_level),0) as inm from pharma_cdm_inventory_parameters as pharma_invpar,ndc_define as ndcval where pharma_invpar.cdm!='" + Constants.NDC_CDM + "' and ndcval.cdm=pharma_invpar.cdm and ndcval.generic_name like '%" + genname + "%' and pharma_invpar.category_levelid='" + drugclassification + "' HAVING inm BETWEEN '" + maxpercent + "' AND '" + percentvalue + "'").list();
+            } else {
+                //ahfsClassificationLevel3List = session.createQuery("select distinct cdm,inventoryBalance,minLevel,categoryLevelid,maxLevel from PharmaCdmInventoryParameters where cdm!='" + Constants.NDC_CDM + "'").list(); 
+                ahfsClassificationLevel3List = session.createSQLQuery("select distinct pharma_invpar.cdm,pharma_invpar.inventory_balance,pharma_invpar.min_level,pharma_invpar.category_levelid,pharma_invpar.max_level,IFNULL(ROUND((pharma_invpar.inventory_balance-pharma_invpar.min_level)/pharma_invpar.min_level),0) as inm from pharma_cdm_inventory_parameters as pharma_invpar where pharma_invpar.cdm!='" + Constants.NDC_CDM + "' HAVING inm BETWEEN '" + maxpercent + "' AND '" + percentvalue + "'").list();
+            }
+            if (!ahfsClassificationLevel3List.isEmpty()) {
+                Iterator itr = ahfsClassificationLevel3List.iterator();
+
+                while (itr.hasNext()) {
+                    Object[] obj021 = (Object[]) itr.next();
+                    String cdm = obj021[0] + "";
+                    cdmdatavalue += cdm + "@";
+                    inventory += obj021[1] + "@";
+                    safestock += obj021[2] + "@";
+                    category += obj021[3] + "@";
+                    maxlevel += obj021[4] + "@";
+
+                    Query query = session.createQuery("SELECT pharama_cdm.chargeDescription FROM PharmaCdmmaster as pharama_cdm WHERE  pharama_cdm.cdm='" + cdm + "' AND pharama_cdm.deletionFlag=" + Constants.ACTIVE + "");
+                    query.setMaxResults(1);
+                    if (!query.list().isEmpty() && query.list().size() > 0) {
+
+                        for (Object list : query.list()) {
+                            labledescription += query.list().get(0) + "@";
+
+                        }
+
+                    } else {
+                        labledescription += "--" + "@";
+
+                    }
+
+                }
+
+            }
+            cdmdata = inventory + "^" + safestock + "^" + labledescription + "^" + category + "^" + cdmdatavalue + "^" + maxlevel;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Exception is in inventoryStatus Method" + e);
+        } finally {
+            session.close();
+        }
+        return cdmdata;
+
+    }
+
+    @Override
+    public List<PharmaCdmDispenseqty> displayDrugutilizationgraph(String startdate, String enddate, String ahfsvalue, String label_genericname, String label_desc, String cinNumber) {
+        @SuppressWarnings("unchecked")
+        Session session = sessionfactory.openSession();
+        List<PharmaCdmDispenseqty> pharma_cdmdisp = null;
+        try {
+
+            pharma_cdmdisp = session.createSQLQuery("SELECT FORMAT((SELECT SUM(total_charge_amount) FROM pharma_cdm_dispenseqty WHERE date(service_date) BETWEEN '" + startdate + "' AND '" + enddate + "' AND update_status=1)/SUM(total_charge_amount),2) as sumvalue,medical_service FROM pharma_cdm_dispenseqty WHERE date(service_date) BETWEEN '" + startdate + "' AND '" + enddate + "' AND update_status=1 GROUP BY medical_service").list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return pharma_cdmdisp;
+    }
+
+    @Override
+    public List getutilizaitonreport(String startdate, String enddate, String ahfsvalue, String label_genericname, String label_desc, String cinNumber) {
+ @SuppressWarnings("unchecked")
+        Session session = sessionfactory.openSession();
+ List utilityqry=null;
+        ArrayList<String> al=new ArrayList<>();
+        
+ 
+ try{
+     utilityqry=session.createSQLQuery("SELECT fin,cdm,charge_description,activity_type,patient_nursing_ambulatory_unit,medical_service,date(service_date),total_charge_amount,charge_qty FROM pharma_cdm_dispenseqty WHERE date(service_date) BETWEEN '"+startdate+"' AND '"+enddate+"' AND update_status=1").list();
+         
+ }catch(Exception e){
+     e.printStackTrace();
+ }
+        return utilityqry;
+    }
+
+    @Override
+    public List<PharmaCdmDispenseqty> utilizationTrendgraph(String startdate, String enddate, String ahfsvalue, String label_genericname, String label_desc, String cinNumber) {
+       @SuppressWarnings("unchecked")
+        Session session = sessionfactory.openSession();
+        List<PharmaCdmDispenseqty> trendgraphlist = null;
+        try {
+            trendgraphlist = session.createSQLQuery("SELECT SUM(total_charge_amount),date(service_date) FROM pharma_cdm_dispenseqty WHERE date(service_date) BETWEEN '"+startdate+"' AND '"+enddate+"' AND update_status=1 GROUP BY service_date").list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return trendgraphlist;
+    }
+
+}

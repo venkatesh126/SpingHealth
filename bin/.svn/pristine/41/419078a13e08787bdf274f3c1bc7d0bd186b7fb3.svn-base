@@ -1,0 +1,71 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package com.occularpharma.core.datamaintanence.model;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ *
+ * @author admin
+ */
+public class Maintaindataforminformation implements Serializable {
+    
+    @NotNull
+    @Size(min=1, max=10)
+    private List<MultipartFile> pricemaster; // Price Master
+    private List<MultipartFile> dispensequantity;// Dispense qty
+        private List<MultipartFile> ndcdefine; // ndc define 
+        private List<MultipartFile> invoice; // Invoice
+        private List<MultipartFile> purchaseorder; // Purchase order
+
+    public List<MultipartFile> getPurchaseorder() {
+        return purchaseorder;
+    }
+
+    public void setPurchaseorder(List<MultipartFile> purchaseorder) {
+        this.purchaseorder = purchaseorder;
+    }
+        
+
+    public List<MultipartFile> getPricemaster() {
+        return pricemaster;
+    }
+
+    public void setPricemaster(List<MultipartFile> pricemaster) {
+        this.pricemaster = pricemaster;
+    }
+
+    public List<MultipartFile> getDispensequantity() {
+        return dispensequantity;
+    }
+
+    public void setDispensequantity(List<MultipartFile> dispensequantity) {
+        this.dispensequantity = dispensequantity;
+    }
+
+    public List<MultipartFile> getNdcdefine() {
+        return ndcdefine;
+    }
+
+    public void setNdcdefine(List<MultipartFile> ndcdefine) {
+        this.ndcdefine = ndcdefine;
+    }
+
+    public List<MultipartFile> getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(List<MultipartFile> invoice) {
+        this.invoice = invoice;
+    }
+        
+
+}
